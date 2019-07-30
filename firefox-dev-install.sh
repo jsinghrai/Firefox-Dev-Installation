@@ -19,7 +19,8 @@ wget -O Firefox-Dev-Edition-Setup.tar.bz2 "https://download.mozilla.org/?product
 
 if [[ $? -ne 0 ]]; then
 	printf "Error: There's a problem in downloading file from Mozilla. \n"
- 	exit 1
+	printf "Failed at Step 1, Please start at Step 1 next time. \n" 	
+	exit 1
 else
 	printf "File has been downloaded successfully. \n"
 	let "step+=1"
@@ -34,6 +35,7 @@ tar xjf Firefox-Dev-Edition-Setup.tar.bz2
 
 if [[ $? -ne 0 ]]; then
 	printf "Error: There was a problem while decompressing the file. \n"
+	printf "Failed at Step 2, Please start at Step 2 next time. \n"
  	exit 1
 else
 	printf "File has been decompress successfully. \n"
@@ -49,7 +51,8 @@ sudo mv firefox /usr/local/firefox-dev-edition
 
 if [[ $? -ne 0 ]]; then
 	printf "Error: There's a problem in moving the Browser Folder to /usr/local/. \n"
- 	exit 1
+	printf "Failed at Step 3, Please start at Step 3 next time. \n" 	
+	exit 1
 else
 	printf "The folder was moved successfully. \n"
 	let "step+=1"
@@ -60,12 +63,21 @@ if (( step == 4 )); then
 # Create the desktop file to run it without terminal
 printf "Creating the desktop file for Browser. \n"
 
-cp ~/Downloads/Firefox-Dev-Installation/firefox-dev-edition.desktop ~/.local/share/applications/
+localDir=~/.local/share/applications/
+
+#checks if the directory exists if it doesn't change it to something that exist.
+if [ ! -d "$localDir" ]; then
+	localDir=/usr/share/applications/
+	sudo cp ~/Downloads/Firefox-Dev-Installation/firefox-dev-edition.desktop $localDir
+else
+	cp ~/Downloads/Firefox-Dev-Installation/firefox-dev-edition.desktop $localDir
+fi
 
 if [[ $? -ne 0 ]]; then
-	printf "Error: There's a problem in creating desktop file. \n"
- 	exit 1
+	printf "Error: There's a problem in creating desktop file at %s.\n" $localDir
+	printf "Failed at Step 4, Please start at Step 4 next time. \n" 	
+	exit 1
 else
-	printf "File has been created successfully. \n"
+	printf "File has been created successfully at %s. \n" $localDir
 fi
 fi
